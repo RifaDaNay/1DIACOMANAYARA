@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="Participe da rifa para passar um dia com Nayara">
 <title>Rifa da Nayara</title>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
 <style>
   * { box-sizing: border-box; }
   body {
@@ -371,12 +373,18 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   window.copiarChavePix = function(){
-    const chave = document.getElementById('chavePix').innerText;
-    navigator.clipboard.writeText(chave).then(()=>{
+    const chave = document.getElementById('chavePix').textContent;
+    const textarea = document.createElement('textarea');
+    textarea.value = chave;
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      document.execCommand('copy');
       alert('Chave Pix copiada com sucesso!');
-    }).catch(()=>{
+    } catch (err) {
       alert('Erro ao copiar a chave Pix.');
-    });
+    }
+    document.body.removeChild(textarea);
   }
 
   atualizarValor();
