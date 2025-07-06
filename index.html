@@ -534,7 +534,8 @@
 </div>
 
 <script>
-  // Variáveis principais
+document.addEventListener('DOMContentLoaded', function() {
+
   const valorUnitario = 6;
   const qtdInput = document.getElementById('qtd');
   const btnValor = document.getElementById('btnValor');
@@ -545,7 +546,6 @@
   const rifaTela = document.getElementById('rifaTela');
   const checkoutTela = document.getElementById('checkoutTela');
 
-  // Atualiza valor do botão e resumo
   function atualizarValor() {
     let qtd = parseInt(qtdInput.value) || 0;
     if (qtd < 0) qtd = 0;
@@ -556,7 +556,6 @@
     resumoValor.textContent = `Valor a pagar: ${totalFormatado}`;
   }
 
-  // Incrementa ou decrementa a qtd
   function alterarQtd(delta) {
     let val = (parseInt(qtdInput.value) || 0) + delta;
     if (val < 0) val = 0;
@@ -564,20 +563,17 @@
     atualizarValor();
   }
 
-  // Adiciona cotas ao clicar nas promoções
   function adicionarCotas(qtdAdicionar) {
     let val = (parseInt(qtdInput.value) || 0) + qtdAdicionar;
     qtdInput.value = val;
     atualizarValor();
   }
 
-  // Limpa input para só números
   function ajustarInput() {
     qtdInput.value = qtdInput.value.replace(/\D/g,'') || '0';
     atualizarValor();
   }
 
-  // Abre modal de reserva após clicar no botão participar
   btnValor.addEventListener('click', e => {
     e.preventDefault();
     if (parseInt(qtdInput.value) < 1){
@@ -587,7 +583,6 @@
     document.getElementById('modalReserva').classList.add('ativo');
   });
 
-  // Confirma reserva: nome e whatsapp obrigatórios
   function confirmarReserva(){
     const nome = document.getElementById('nomeReserva').value.trim();
     const cel = document.getElementById('celularReserva').value.trim();
@@ -600,7 +595,6 @@
     checkoutTela.classList.add('ativo');
   }
 
-  // Confirmar pagamento - salva cotas no localStorage
   function confirmarPagamento(){
     const qtd = parseInt(qtdInput.value) || 0;
     if (qtd < 1){
@@ -619,13 +613,11 @@
     atualizarValor();
   }
 
-  // Voltar para tela da rifa
   function voltarParaRifa(){
     checkoutTela.classList.remove('ativo');
     rifaTela.style.display = 'block';
   }
 
-  // Mostrar cotas no modal
   function abrirConsulta(){
     const cotas = JSON.parse(localStorage.getItem('minhasCotas')) || [];
     const lista = document.getElementById('listaMinhasCotas');
@@ -637,21 +629,28 @@
     document.getElementById('modalMinhasCotas').classList.add('ativo');
   }
 
-  // Fechar modais
-  function fecharMinhasCotas(){ document.getElementById('modalMinhasCotas').classList.remove('ativo'); }
-  function fecharRanking(){ document.getElementById('modalRanking').classList.remove('ativo'); }
-  function fecharReserva(){ document.getElementById('modalReserva').classList.remove('ativo'); }
-
-  // Copiar chave Pix
-  function copiarPix(){
-    const pix = document.getElementById('chavePix');
-    pix.select();
-    pix.setSelectionRange(0, 99999);
-    document.execCommand('copy');
-    alert('Chave Pix copiada!');
+  function fecharMinhasCotas(){
+    document.getElementById('modalMinhasCotas').classList.remove('ativo');
   }
 
-  // Atualiza QR code com upload de imagem local
+  function fecharRanking(){
+    document.getElementById('modalRanking').classList.remove('ativo');
+  }
+
+  function fecharReserva(){
+    document.getElementById('modalReserva').classList.remove('ativo');
+  }
+
+  async function copiarPix(){
+    try {
+      const pix = document.getElementById('chavePix').value;
+      await navigator.clipboard.writeText(pix);
+      alert('Chave Pix copiada!');
+    } catch(err) {
+      alert('Erro ao copiar. Copie manualmente: ' + pix);
+    }
+  }
+
   uploadInput.addEventListener('change', e => {
     const file = e.target.files[0];
     if(file){
@@ -661,7 +660,6 @@
     }
   });
 
-  // Atualiza QR code pela URL
   function atualizarQrcodeUrl(){
     const url = qrcodeUrlInput.value.trim();
     if(url){
@@ -669,11 +667,9 @@
     }
   }
 
-  // Alterna conteúdo das descrições
   function toggleDescricao(id){
     const box = document.getElementById(id);
     const ativo = box.classList.toggle('ativa');
-    // Alterna o ícone do toggle
     const icone = box.querySelector('.icone-toggle');
     if (ativo){
       icone.textContent = '˄';
@@ -682,11 +678,17 @@
     }
   }
 
-  // Inicia valor no carregamento
+  // Botão Top Compradores
+  document.querySelector('.btn-top').addEventListener('click', () => {
+    document.getElementById('modalRanking').classList.add('ativo');
+  });
+
   atualizarValor();
 
+});
 </script>
 
+
 </body>
-      </html>
-      
+ </html>
+ 
