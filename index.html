@@ -1,691 +1,678 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Rifa R$5.000 - Rifa & Checkout</title>
-<style>
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f4f4f4;
-    color: #333;
-  }
-  .top-bar {
-    background: #1c1c1c;
-    color: white;
-    padding: 10px;
-    font-size: 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-  }
-  a, button {
-    cursor: pointer;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rifa R$5.000 - Rifa & Checkout</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      color: #333;
+    }
+    .top-bar {
+      background: #1c1c1c;
+      color: white;
+      padding: 10px;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    a, button {
+      cursor: pointer;
+    }
 
-  /* --- TELA RIFA --- */
-  .banner {
-    position: relative;
-  }
-  .banner img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-  .banner .texto {
-    position: absolute;
-    bottom: 15px;
-    left: 10px;
-    right: 10px;
-    color: white;
-    font-weight: bold;
-    text-shadow: 1px 1px 2px black;
-    font-size: 16px;
-  }
-  .buttons {
-    display: flex;
-    flex-direction: column;
-    margin: 10px;
-  }
-  .buttons button {
-    margin: 5px 0;
-    padding: 12px;
-    border: none;
-    font-size: 16px;
-    border-radius: 6px;
-    font-weight: bold;
-    color: white;
-    background: #00994d;
-  }
-  .btn-numeros {
-    background: #333;
-  }
-  .btn-top {
-    background: #00994d;
-  }
-  .info {
-    text-align: center;
-    padding: 10px;
-  }
-  .info span {
-    background: #eee;
-    padding: 4px 8px;
-    border-radius: 5px;
-    margin: 0 4px;
-    display: inline-block;
-  }
-  .promo {
-    margin: 10px;
-  }
-  .promo-title {
-    font-weight: bold;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-  }
-  .promo-title::before {
-    content: "📢";
-    margin-right: 5px;
-  }
-  .opcoes {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-top: 10px;
-  }
-  .opcao {
-    background: #ddd;
-    text-align: center;
-    padding: 12px;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    user-select: none;
-  }
-  .opcao.popular {
-    border: 2px solid #00994d;
-    background: #e7fff0;
-    position: relative;
-  }
-  .opcao.popular::before {
-    content: "Mais popular";
-    color: white;
-    background: #00994d;
-    font-size: 10px;
-    padding: 2px 5px;
-    border-radius: 3px;
-    position: absolute;
-    top: -10px;
-    left: 5px;
-  }
-  .quantidade {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 15px 0;
-  }
-  .quantidade button {
-    padding: 10px 15px;
-    font-size: 18px;
-    cursor: pointer;
-    user-select: none;
-  }
-  .quantidade input {
-    width: 60px;
-    text-align: center;
-    font-size: 16px;
-    margin: 0 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
-  .btn-participar {
-    background: #00994d;
-    color: white;
-    padding: 15px;
-    text-align: center;
-    font-weight: bold;
-    border: none;
-    width: calc(100% - 20px);
-    margin: 0 10px 20px 10px;
-    border-radius: 6px;
-    font-size: 16px;
-    display: inline-block;
-    text-decoration: none;
-    user-select: none;
-  }
-  .descricao {
-    margin: 10px;
-  }
-  .descricao-header {
-    background: #d4f4dc;
-    border-radius: 10px;
-    padding: 10px;
-    border-left: 5px solid #4CAF50;
-    font-size: 18px;
-    font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    user-select: none;
-  }
-  .descricao-conteudo {
-    background: white;
-    padding: 15px;
-    border-radius: 0 0 10px 10px;
-    font-size: 15px;
-    line-height: 1.5;
-    display: none;
-  }
-  .descricao.ativa .descricao-conteudo {
-    display: block;
-  }
-  .icone-toggle {
-    font-size: 20px;
-    margin-left: 10px;
-    transition: transform 0.3s;
-  }
-  .descricao.ativa .icone-toggle {
-    transform: rotate(180deg);
-  }
-  /* Modal ranking */
-  .modal-ranking {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-  }
-  .modal-ranking.ativo {
-    display: flex;
-  }
-  .modal-content-ranking {
-    background: white;
-    width: 90%;
-    max-width: 400px;
-    max-height: 80vh;
-    border-radius: 10px;
-    padding: 20px 20px 30px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    overflow-y: auto;
-    position: relative;
-  }
-  .btn-fechar-ranking {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    background: #f44336;
-    color: white;
-    border: none;
-    font-size: 18px;
-    font-weight: bold;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    line-height: 26px;
-    text-align: center;
-    user-select: none;
-  }
-  .lista-ranking {
-    margin-top: 40px;
-  }
-  .linha-ranking {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid #ddd;
-    font-size: 16px;
-  }
-  .posicao {
-    font-weight: bold;
-  }
-  .medalha {
-    color: #ffb300;
-    font-size: 18px;
-  }
-  /* --- TELA CHECKOUT --- */
-  #checkoutTela {
-    display: none;
-    background: white;
-    max-width: 420px;
-    margin: 20px auto;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-  }
-  #checkoutTela.ativo {
-    display: block;
-  }
-  #checkoutTela h1 {
-    color: #00994d;
-    text-align: center;
-    margin-bottom: 15px;
-  }
-  #checkoutTela label {
-    display: block;
-    margin: 15px 0 5px;
-    font-weight: bold;
-    color: #1c1c1c;
-  }
-  #checkoutTela input[type="text"],
-  #checkoutTela input[type="url"] {
-    width: 100%;
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-    box-sizing: border-box;
-  }
-  .qrcode-container {
-    text-align: center;
-    margin-top: 20px;
-  }
-  .qrcode-container img {
-    width: 220px;
-    height: 220px;
-    border-radius: 12px;
-    border: 2px solid #00994d;
-    object-fit: contain;
-  }
-  .qrcode-container input[type="file"],
-  .qrcode-container input[type="url"] {
-    margin-top: 10px;
-    font-size: 14px;
-  }
-  .qrcode-container button {
-    margin-top: 5px;
-    padding: 8px 15px;
-    background: #00994d;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  .resumo {
-    background: #d4f4dc;
-    border-radius: 10px;
-    padding: 15px;
-    margin-top: 25px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #004d24;
-    text-align: center;
-  }
-  .btn-confirmar {
-    background: #00994d;
-    color: white;
-    border: none;
-    width: 100%;
-    padding: 15px;
-    font-weight: bold;
-    font-size: 18px;
-    border-radius: 8px;
-    margin-top: 25px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  .btn-confirmar:hover {
-    background: #007a38;
-  }
-  .btn-voltar {
-    margin-top: 15px;
-    background: #555;
-    border: none;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    user-select: none;
-  }
-</style>
+    /* --- TELA RIFA --- */
+
+    .banner {
+      position: relative;
+    }
+    .banner img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .banner .texto {
+      position: absolute;
+      bottom: 15px;
+      left: 10px;
+      right: 10px;
+      color: white;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px black;
+      font-size: 16px;
+    }
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      margin: 10px;
+    }
+    .buttons button {
+      margin: 5px 0;
+      padding: 12px;
+      border: none;
+      font-size: 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      color: white;
+      background: #00994d;
+    }
+    .btn-numeros {
+      background: #333;
+    }
+    .btn-top {
+      background: #00994d;
+    }
+    .info {
+      text-align: center;
+      padding: 10px;
+    }
+    .info span {
+      background: #eee;
+      padding: 4px 8px;
+      border-radius: 5px;
+      margin: 0 4px;
+      display: inline-block;
+    }
+    .promo {
+      margin: 10px;
+    }
+    .promo-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+    .promo-title::before {
+      content: "📢";
+      margin-right: 5px;
+    }
+    .opcoes {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .opcao {
+      background: #ddd;
+      text-align: center;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+    }
+    .opcao.popular {
+      border: 2px solid #00994d;
+      background: #e7fff0;
+      position: relative;
+    }
+    .opcao.popular::before {
+      content: "Mais popular";
+      color: white;
+      background: #00994d;
+      font-size: 10px;
+      padding: 2px 5px;
+      border-radius: 3px;
+      position: absolute;
+      top: -10px;
+      left: 5px;
+    }
+    .quantidade {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 15px 0;
+    }
+    .quantidade button {
+      padding: 10px 15px;
+      font-size: 18px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .quantidade input {
+      width: 60px;
+      text-align: center;
+      font-size: 16px;
+      margin: 0 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .btn-participar {
+      background: #00994d;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-weight: bold;
+      border: none;
+      width: calc(100% - 20px);
+      margin: 0 10px 20px 10px;
+      border-radius: 6px;
+      font-size: 16px;
+      display: inline-block;
+      text-decoration: none;
+      user-select: none;
+    }
+
+    .descricao {
+      margin: 10px;
+    }
+    .descricao-header {
+      background: #d4f4dc;
+      border-radius: 10px;
+      padding: 10px;
+      border-left: 5px solid #4CAF50;
+      font-size: 18px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .descricao-conteudo {
+      background: white;
+      padding: 15px;
+      border-radius: 0 0 10px 10px;
+      font-size: 15px;
+      line-height: 1.5;
+      display: none;
+    }
+    .descricao.ativa .descricao-conteudo {
+      display: block;
+    }
+    .icone-toggle {
+      font-size: 20px;
+      margin-left: 10px;
+      transition: transform 0.3s;
+    }
+    .descricao.ativa .icone-toggle {
+      transform: rotate(180deg);
+    }
+
+    /* Modal ranking */
+    .modal-ranking {
+      display: none; /* escondido inicialmente */
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-ranking.ativo {
+      display: flex;
+    }
+    .modal-content-ranking {
+      background: white;
+      width: 90%;
+      max-width: 400px;
+      max-height: 80vh;
+      border-radius: 10px;
+      padding: 20px 20px 30px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      overflow-y: auto;
+      position: relative;
+    }
+    .btn-fechar-ranking {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: #f44336;
+      color: white;
+      border: none;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      line-height: 26px;
+      text-align: center;
+      user-select: none;
+    }
+    .lista-ranking {
+      margin-top: 40px;
+    }
+    .linha-ranking {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #ddd;
+      font-size: 16px;
+    }
+    .posicao {
+      font-weight: bold;
+    }
+    .medalha {
+      color: #ffb300; /* dourado */
+      font-size: 18px;
+    }
+
+    /* --- TELA CHECKOUT --- */
+    #checkoutTela {
+      display: none;
+      background: white;
+      max-width: 420px;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
+    #checkoutTela.ativo {
+      display: block;
+    }
+    #checkoutTela h1 {
+      color: #00994d;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    #checkoutTela label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: bold;
+      color: #1c1c1c;
+    }
+    #checkoutTela input[type="text"],
+    #checkoutTela input[type="url"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    .qrcode-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .qrcode-container img {
+      width: 220px;
+      height: 220px;
+      border-radius: 12px;
+      border: 2px solid #00994d;
+      object-fit: contain;
+    }
+    .btn-upload {
+      margin-top: 10px;
+      display: block;
+      font-size: 14px;
+      color: #00994d;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: underline;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    .resumo {
+      background: #d4f4dc;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 25px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #004d24;
+      text-align: center;
+    }
+    .btn-confirmar {
+      background: #00994d;
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 15px;
+      font-weight: bold;
+      font-size: 18px;
+      border-radius: 8px;
+      margin-top: 25px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .btn-confirmar:hover {
+      background: #007a38;
+    }
+    .btn-voltar {
+      margin-top: 15px;
+      background: #555;
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      user-select: none;
+    }
+  </style>
 </head>
 <body>
 
-<div class="top-bar">
-  <div>Instagram</div>
-  <div style="display:flex; gap:10px; align-items:center;">
-    <button onclick="abrirConsulta()" style="background:#00994d; color:white; border:none; padding:5px 10px; border-radius:4px; font-size:13px; cursor:pointer;">🔍 Minhas cotas</button>
-  </div>
-</div>
-
-<!-- TELA RIFA -->
-<div id="rifaTela">
-
-  <div class="banner">
-    <img src="https://i.postimg.cc/sX6z99DQ/1-DIA-COM-A-NAYARA-20250706-001746-0000.png" alt="Banner da rifa" />
-    <div class="texto">
-      PASSE UM DIA COMIGO POR APENAS R$6
+  <div class="top-bar">
+    <div>Instagram</div>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <button onclick="abrirConsulta()" style="background:#00994d; color:white; border:none; padding:5px 10px; border-radius:4px; font-size:13px; cursor:pointer;">🔍 Minhas cotas</button>
     </div>
   </div>
 
-  <div class="buttons">
-    <button class="btn-top">🏆 Top compradores</button>
-  </div>
+  <!-- TELA RIFA -->
+  <div id="rifaTela">
 
-  <div class="info">
-    Sorteio <span>EM BREVE</span> Apenas <span>R$ 6</span><br>
-    <small>Quanto mais comprar, maiores são as suas chances de ganhar!</small>
-  </div>
-
-  <div class="promo">
-    <div class="promo-title">Promoção</div>
-    <div class="opcoes">
-      <div class="opcao" onclick="adicionarCotas(5)">+5<br>SELECIONAR</div>
-      <div class="opcao popular" onclick="adicionarCotas(10)">+10<br>SELECIONAR</div>
-      <div class="opcao" onclick="adicionarCotas(20)">+20<br>SELECIONAR</div>
-      <div class="opcao" onclick="adicionarCotas(30)">+30<br>SELECIONAR</div>
-      <div class="opcao" onclick="adicionarCotas(40)">+40<br>SELECIONAR</div>
-      <div class="opcao" onclick="adicionarCotas(50)">+50<br>SELECIONAR</div>
+    <div class="banner">
+      <img src="https://i.postimg.cc/sX6z99DQ/1-DIA-COM-A-NAYARA-20250706-001746-0000.png" alt="Banner da rifa" />
+      <div class="texto">
+        PASSE UM DIA COMIGO POR APENAS R$6
+      </div>
     </div>
-  </div>
 
-  <div class="quantidade">
-    <button onclick="alterarQtd(-1)">−</button>
-    <input type="text" id="qtd" value="0" oninput="ajustarInput()" />
-    <button onclick="alterarQtd(1)">+</button>
-  </div>
-
-  <a href="#" class="btn-participar" id="btnValor">✅ Quero R$ 0,00 participar</a>
-
-  <div class="descricao" id="descBox">
-    <div class="descricao-header" onclick="toggleDescricao('descBox')">
-      📝 Descrição
-      <span class="icone-toggle" id="iconeToggleDesc">⌄</span>
+    <div class="buttons">
+      <button class="btn-top">🏆 Top compradores</button>
     </div>
-    <div class="descricao-conteudo" id="descConteudo">
-      <strong>Rifa Premiada – PASSE 1 DIA COM A NAYARA!</strong><br><br>
-      Por apenas R$6, você garante sua chance de passar um dia inteirinho comigo. Vamos conversar, nos divertir, tirar muitas fotos e criar memórias especiais que ficarão marcadas para sempre.
-      <br><br>
-      🎟️ Cada cota adquirida aumenta suas chances de ser o grande sortudo(a) que vai viver esse momento exclusivo ao meu lado.
-      <br><br>
-      💖 Não perca! É a sua oportunidade de transformar um simples dia em algo extraordinário.
-      <br><br>
-      Garanta já suas cotas e venha fazer parte dessa experiência única! 🍀✨
-      <br><br>
-      Garanta já o seu bilhete e não perca a oportunidade de faturar esse prêmio incrível!
-      <br><br>
-      Quanto mais bilhetes, mais chances de ser o sorteado! 🎉
-      <br><br>
-      Participe agora e boa sorte! 🍀
-    </div>
-  </div>
 
-  <div class="descricao" id="regrasBox">
-    <div class="descricao-header" onclick="toggleDescricao('regrasBox')">
-      📋 Regras
-      <span class="icone-toggle" id="iconeToggleRegras">⌄</span>
+    <div class="info">
+      Sorteio <span>EM BREVE</span> Apenas <span>R$ 6</span><br>
+      <small>Quanto mais comprar, maiores são as suas chances de ganhar!</small>
     </div>
-    <div class="descricao-conteudo" id="regrasConteudo">
-      <ul>
-        <li>1. A participação é válida apenas para maiores de 18 anos.</li>
-        <li>2. Cada bilhete custa R$ 6,00.</li>
-        <li>3. O sorteio será realizado em data a ser informada.</li>
-        <li>5. Não nos responsabilizamos por compras feitas fora do site oficial.</li>
-        <li>6. Em caso de empate, um novo sorteio será realizado.</li>
-        <li>7. A participação implica na aceitação de todas as regras.</li>
-      </ul>
-    </div>
-  </div>
 
-  <!-- Modal do ranking de compradores -->
-  <div id="modalRanking" class="modal-ranking">
-    <div class="modal-content-ranking">
-      <button class="btn-fechar-ranking" onclick="fecharRanking()">X</button>
-      <h2>🏆 Top 10 Compradores</h2>
-      <div class="lista-ranking">
-        <div class="linha-ranking">
-          <div class="posicao medalha">🥇 1. João Silva</div>
-          <div class="valor">50 números</div>
-        </div>
-        <div class="linha-ranking">
-          <div class="posicao medalha">🥈 2. Mario Souza</div>
-          <div class="valor">45 números</div>
-        </div>
-        <div class="linha-ranking">
-          <div class="posicao medalha">🥉 3. Carlos Lima</div>
-          <div class="valor">40 números</div>
-        </div>
-        <div class="linha-ranking">
-          <div class="posicao">4. Julio </div>
-          <div class="valor">35 números</div>
-        </div>
-        <div class="linha-ranking">
-          <div class="posicao">5. Pedro Rocha</div>
-          <div class="valor">30 números</div>
-        </div>
-        <div class="linha-ranking">
-          <div class="posicao">6. Gabriel Martins</div>
-          <div class="valor">28 números</div>
-        </div>
-        <div class="linha-ranking">
-          <div class="posicao">7. Bruno Costa</div>
-          <div class="valor">25 números</div>
-        </div>
-        <div class="linha-ranking">
-          <div class="posicao">8. Fernando Dias</div>
-          <div class="valor">22 números</div>
-        </div>
-        <div class="linha-ranking">
-          <div class="posicao">9. Ricardo Alves</div>
-          <div class="valor">20 números</div>
-        </div>
-        <div class="linha-ranking">
-          <div class="posicao">10. Júlio Pereira</div>
-          <div class="valor">18 números</div>
+    <div class="promo">
+      <div class="promo-title">Promoção</div>
+      <div class="opcoes">
+        <div class="opcao" onclick="adicionarCotas(5)">+5<br>SELECIONAR</div>
+        <div class="opcao popular" onclick="adicionarCotas(10)">+10<br>SELECIONAR</div>
+        <div class="opcao" onclick="adicionarCotas(20)">+20<br>SELECIONAR</div>
+        <div class="opcao" onclick="adicionarCotas(30)">+30<br>SELECIONAR</div>
+        <div class="opcao" onclick="adicionarCotas(40)">+40<br>SELECIONAR</div>
+        <div class="opcao" onclick="adicionarCotas(50)">+50<br>SELECIONAR</div>
+      </div>
+    </div>
+
+    <div class="quantidade">
+      <button onclick="alterarQtd(-1)">−</button>
+      <input type="text" id="qtd" value="0" oninput="ajustarInput()" />
+      <button onclick="alterarQtd(1)">+</button>
+    </div>
+
+    <a href="#" class="btn-participar" id="btnValor">✅ Quero R$ 0,00 participar</a>
+
+    <div class="descricao" id="descBox">
+      <div class="descricao-header" onclick="toggleDescricao('descBox')">
+        📝 Descrição
+        <span class="icone-toggle" id="iconeToggleDesc">⌄</span>
+      </div>
+      <div class="descricao-conteudo" id="descConteudo">
+        <strong>Rifa Premiada – PASSE 1 DIA COM A NAYARA!</strong><br><br>
+
+Por apenas R$6, você garante sua chance de passar um dia inteirinho comigo. Vamos conversar, nos divertir, tirar muitas fotos e criar memórias especiais que ficarão marcadas para sempre.
+
+🎟️ Cada cota adquirida aumenta suas chances de ser o grande sortudo(a) que vai viver esse momento exclusivo ao meu lado.
+
+💖 Não perca! É a sua oportunidade de transformar um simples dia em algo extraordinário.
+
+Garanta já suas cotas e venha fazer parte dessa experiência única! 🍀✨<br><br>
+        Garanta já o seu bilhete e não perca a oportunidade de faturar esse prêmio incrível!<br><br>
+        Quanto mais bilhetes, mais chances de ser o sorteado! 🎉<br><br>
+        Participe agora e boa sorte! 🍀
+      </div>
+    </div>
+
+    <div class="descricao" id="regrasBox">
+      <div class="descricao-header" onclick="toggleDescricao('regrasBox')">
+        📋 Regras
+        <span class="icone-toggle" id="iconeToggleRegras">⌄</span>
+      </div>
+      <div class="descricao-conteudo" id="regrasConteudo">
+        <ul>
+          <li>1. A participação é válida apenas para maiores de 18 anos.</li>
+          <li>2. Cada bilhete custa R$ 6,00.</li>
+          <li>3. O sorteio será realizado em data a ser informada.</li>
+          <li>5. Não nos responsabilizamos por compras feitas fora do site oficial.</li>
+          <li>6. Em caso de empate, um novo sorteio será realizado.</li>
+          <li>7. A participação implica na aceitação de todas as regras.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Modal do ranking de compradores -->
+    <div id="modalRanking" class="modal-ranking">
+      <div class="modal-content-ranking">
+        <button class="btn-fechar-ranking" onclick="fecharRanking()">X</button>
+        <h2>🏆 Top 10 Compradores</h2>
+        <div class="lista-ranking">
+          <div class="linha-ranking">
+            <div class="posicao medalha">🥇 1. João Silva</div>
+            <div class="valor">50 números</div>
+          </div>
+          <div class="linha-ranking">
+            <div class="posicao medalha">🥈 2. Mario Souza</div>
+            <div class="valor">45 números</div>
+          </div>
+          <div class="linha-ranking">
+            <div class="posicao medalha">🥉 3. Carlos Lima</div>
+            <div class="valor">40 números</div>
+          </div>
+          <div class="linha-ranking">
+            <div class="posicao">4. Julio </div>
+            <div class="valor">35 números</div>
+          </div>
+          <div class="linha-ranking">
+            <div class="posicao">5. Pedro Rocha</div>
+            <div class="valor">30 números</div>
+          </div>
+          <div class="linha-ranking">
+            <div class="posicao">6. Gabriel Martins</div>
+            <div class="valor">28 números</div>
+          </div>
+          <div class="linha-ranking">
+            <div class="posicao">7. Bruno Costa</div>
+            <div class="valor">25 números</div>
+          </div>
+          <div class="linha-ranking">
+            <div class="posicao">8. Fernando Dias</div>
+            <div class="valor">22 números</div>
+          </div>
+          <div class="linha-ranking">
+            <div class="posicao">9. Ricardo Alves</div>
+            <div class="valor">20 números</div>
+          </div>
+          <div class="linha-ranking">
+            <div class="posicao">10. Júlio Pereira</div>
+            <div class="valor">18 números</div>
+          </div>
         </div>
       </div>
     </div>
+
   </div>
 
-</div>
-
-<!-- Modal de reserva -->
-<div id="modalReserva" class="modal-ranking">
-  <div class="modal-content-ranking">
-    <button class="btn-fechar-ranking" onclick="fecharReserva()">X</button>
-    <h2>🔒 Reservar Cotas</h2>
-    <label for="nomeReserva">Seu nome:</label>
-    <input type="text" id="nomeReserva" placeholder="Digite seu nome" style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;font-size:16px;" />
-    <br><br>
-    <label for="celularReserva">WhatsApp:</label>
-    <input type="text" id="celularReserva" placeholder="(DDD) 91234-5678" style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;font-size:16px;" />
-    <br><br>
-    <button onclick="confirmarReserva()" class="btn-confirmar" style="width: 100%;">Continuar para pagamento</button>
+  <!-- Modal de reserva -->
+  <div id="modalReserva" class="modal-ranking">
+    <div class="modal-content-ranking">
+      <button class="btn-fechar-ranking" onclick="fecharReserva()">X</button>
+      <h2>🔒 Reservar Cotas</h2>
+      <label for="nomeReserva">Seu nome:</label>
+      <input type="text" id="nomeReserva" placeholder="Digite seu nome" style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;font-size:16px;" />
+      <br><br>
+      <label for="celularReserva">WhatsApp:</label>
+      <input type="text" id="celularReserva" placeholder="(DDD) 91234-5678" style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;font-size:16px;" />
+      <br><br>
+      <button onclick="confirmarReserva()" class="btn-confirmar">Continuar para pagamento</button>
+    </div>
   </div>
-</div>
 
-<!-- Modal Minhas Cotas -->
-<div id="modalMinhasCotas" class="modal-ranking">
-  <div class="modal-content-ranking" style="max-width: 320px;">
-    <button class="btn-fechar-ranking" onclick="fecharMinhasCotas()">X</button>
-    <h2>🎟️ Minhas Cotas</h2>
-    <div id="listaMinhasCotas" style="max-height: 300px; overflow-y: auto; margin-top: 20px; font-size: 16px; color: #000;"></div>
+  <!-- Modal Minhas Cotas -->
+  <div id="modalConsulta" class="modal-ranking">
+    <div class="modal-content-ranking">
+      <button class="btn-fechar-ranking" onclick="fecharConsulta()">X</button>
+      <h2>🔎 Minhas Cotas</h2>
+      <label for="celularConsulta">Digite seu WhatsApp para consultar:</label>
+      <input type="text" id="celularConsulta" placeholder="(DDD) 91234-5678" style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;font-size:16px;" />
+      <br><br>
+      <button onclick="consultarCotas()" class="btn-confirmar">Consultar</button>
+      <div id="resultadoConsulta" style="margin-top:15px;"></div>
+    </div>
   </div>
-</div>
 
-<!-- Tela Checkout -->
-<div id="checkoutTela">
-  <h1>Checkout da Rifa</h1>
-  <label for="chavePix">Chave Pix</label>
-  <div style="display:flex;gap:8px;">
-    <input type="text" id="chavePix" readonly value="nayassuncao342@gmail.com" style="flex:1; padding: 10px; font-size: 16px; border-radius: 6px; border: 1px solid #ccc;"/>
-    <button onclick="copiarPix()" style="padding: 10px 15px; background:#00994d; color:#fff; border:none; border-radius:6px;">📋 Copiar</button>
+  <!-- TELA CHECKOUT -->
+  <div id="checkoutTela">
+    <h1>💰 Checkout</h1>
+    <label for="qrcodeImg">📷 Adicione seu QR Code Pix:</label>
+    <input type="file" id="qrcodeImg" accept="image/*" />
+    <div class="qrcode-container">
+      <img id="imagemQrcode" src="" alt="QR Code Pix" style="display:none" />
+    </div>
+
+    <label for="chavePix">Chave Pix para pagamento:</label>
+    <input type="text" id="chavePix" placeholder="Insira sua chave Pix" />
+
+    <div class="resumo" id="resumoCompra">Total: R$ 0,00</div>
+
+    <button onclick="finalizarCompra()" class="btn-confirmar">Finalizar compra</button>
+    <button onclick="voltar()" class="btn-voltar">Voltar</button>
   </div>
-  <div class="qrcode-container">
-    <img id="qrcodeImg" src="https://i.postimg.cc/C1ygm4yd/1000080924.jpg" alt="QR Code Pix" />
-    <br />
-    <input type="file" id="uploadInput" accept="image/*" />
-    <input type="url" id="qrcodeUrl" placeholder="Ou cole a URL da imagem" style="margin-top:10px; width: 100%; padding: 8px; font-size: 14px; border-radius: 6px; border: 1px solid #ccc;" />
-    <button onclick="atualizarQrcodeUrl()" style="margin-top:5px; background:#00994d; color:white; border:none; padding:8px 15px; border-radius:6px; cursor:pointer;">Usar URL</button>
-  </div>
-  <div class="resumo" id="resumoValor">Valor a pagar: R$ 0,00</div>
-  <button class="btn-confirmar" onclick="confirmarPagamento()">Confirmar Pagamento</button>
-  <button class="btn-voltar" onclick="voltarParaRifa()">← Voltar</button>
-</div>
 
-<script>
-  // Variáveis principais
-  const valorUnitario = 6;
-  const qtdInput = document.getElementById('qtd');
-  const btnValor = document.getElementById('btnValor');
-  const qrcodeImg = document.getElementById('qrcodeImg');
-  const qrcodeUrlInput = document.getElementById('qrcodeUrl');
-  const uploadInput = document.getElementById('uploadInput');
-  const resumoValor = document.getElementById('resumoValor');
-  const rifaTela = document.getElementById('rifaTela');
-  const checkoutTela = document.getElementById('checkoutTela');
+  <script>
+    // Controle quantidade
+    const qtdInput = document.getElementById('qtd');
+    const btnValor = document.getElementById('btnValor');
+    let quantidade = 0;
+    let valorUnitario = 6;
 
-  // Atualiza valor do botão e resumo
-  function atualizarValor() {
-    let qtd = parseInt(qtdInput.value) || 0;
-    if (qtd < 0) qtd = 0;
-    qtdInput.value = qtd;
-    const total = qtd * valorUnitario;
-    const totalFormatado = total.toLocaleString('pt-BR', {style:'currency',currency:'BRL'});
-    btnValor.textContent = `✅ Quero ${totalFormatado} participar`;
-    resumoValor.textContent = `Valor a pagar: ${totalFormatado}`;
-  }
-
-  // Incrementa ou decrementa a qtd
-  function alterarQtd(delta) {
-    let val = (parseInt(qtdInput.value) || 0) + delta;
-    if (val < 0) val = 0;
-    qtdInput.value = val;
-    atualizarValor();
-  }
-
-  // Adiciona cotas ao clicar nas promoções
-  function adicionarCotas(qtdAdicionar) {
-    let val = (parseInt(qtdInput.value) || 0) + qtdAdicionar;
-    qtdInput.value = val;
-    atualizarValor();
-  }
-
-  // Limpa input para só números
-  function ajustarInput() {
-    qtdInput.value = qtdInput.value.replace(/\D/g,'') || '0';
-    atualizarValor();
-  }
-
-  // Abre modal de reserva após clicar no botão participar
-  btnValor.addEventListener('click', e => {
-    e.preventDefault();
-    if (parseInt(qtdInput.value) < 1){
-      alert('Selecione ao menos 1 cota.');
-      return;
+    function ajustarInput() {
+      let val = parseInt(qtdInput.value);
+      if (isNaN(val) || val < 0) val = 0;
+      quantidade = val;
+      qtdInput.value = quantidade;
+      atualizarValor();
     }
-    document.getElementById('modalReserva').classList.add('ativo');
-  });
-
-  // Confirma reserva: nome e whatsapp obrigatórios
-  function confirmarReserva(){
-    const nome = document.getElementById('nomeReserva').value.trim();
-    const cel = document.getElementById('celularReserva').value.trim();
-    if (!nome || !cel){
-      alert('Preencha seu nome e WhatsApp para continuar.');
-      return;
+    function alterarQtd(n) {
+      quantidade += n;
+      if (quantidade < 0) quantidade = 0;
+      qtdInput.value = quantidade;
+      atualizarValor();
     }
-    document.getElementById('modalReserva').classList.remove('ativo');
-    rifaTela.style.display = 'none';
-    checkoutTela.classList.add('ativo');
-  }
-
-  // Confirmar pagamento - salva cotas no localStorage
-  function confirmarPagamento(){
-    const qtd = parseInt(qtdInput.value) || 0;
-    if (qtd < 1){
-      alert('Quantidade inválida.');
-      return;
+    function adicionarCotas(n) {
+      quantidade += n;
+      if (quantidade < 0) quantidade = 0;
+      qtdInput.value = quantidade;
+      atualizarValor();
     }
-    let cotas = JSON.parse(localStorage.getItem('minhasCotas')) || [];
-    const base = cotas.length;
-    for(let i = 1; i <= qtd; i++){
-      cotas.push(`Cota #${base + i}`);
+    function atualizarValor() {
+      const total = (quantidade * valorUnitario);
+      btnValor.textContent = quantidade > 0 ? `✅ Quero R$ ${total.toFixed(2).replace('.', ',')} participar` : '✅ Quero R$ 0,00 participar';
     }
-    localStorage.setItem('minhasCotas', JSON.stringify(cotas));
-    alert(`Pagamento confirmado! Você comprou ${qtd} cotas.`);
-    voltarParaRifa();
-    qtdInput.value = '0';
-    atualizarValor();
-  }
 
-  // Voltar para tela da rifa
-  function voltarParaRifa(){
-    checkoutTela.classList.remove('ativo');
-    rifaTela.style.display = 'block';
-  }
+    btnValor.addEventListener('click', function(e) {
+      e.preventDefault();
+      if(quantidade < 1){
+        alert('Selecione pelo menos 1 cota para participar!');
+        return;
+      }
+      abrirReserva();
+    });
 
-  // Mostrar cotas no modal
-  function abrirConsulta(){
-    const cotas = JSON.parse(localStorage.getItem('minhasCotas')) || [];
-    const lista = document.getElementById('listaMinhasCotas');
-    if(cotas.length === 0){
-      lista.innerHTML = '<p>Você ainda não comprou nenhuma cota.</p>';
-    } else {
-      lista.innerHTML = cotas.map(c => `<div>✅ ${c}</div>`).join('');
+    // Descrição e regras toggle
+    function toggleDescricao(id) {
+      const box = document.getElementById(id);
+      box.classList.toggle('ativa');
     }
-    document.getElementById('modalMinhasCotas').classList.add('ativo');
-  }
 
-  // Fechar modais
-  function fecharMinhasCotas(){ document.getElementById('modalMinhasCotas').classList.remove('ativo'); }
-  function fecharRanking(){ document.getElementById('modalRanking').classList.remove('ativo'); }
-  function fecharReserva(){ document.getElementById('modalReserva').classList.remove('ativo'); }
-
-  // Copiar chave Pix
-  function copiarPix(){
-    const pix = document.getElementById('chavePix');
-    pix.select();
-    pix.setSelectionRange(0, 99999);
-    document.execCommand('copy');
-    alert('Chave Pix copiada!');
-  }
-
-  // Atualiza QR code com upload de imagem local
-  uploadInput.addEventListener('change', e => {
-    const file = e.target.files[0];
-    if(file){
-      const reader = new FileReader();
-      reader.onload = () => { qrcodeImg.src = reader.result; };
-      reader.readAsDataURL(file);
+    // Modal reserva
+    const modalReserva = document.getElementById('modalReserva');
+    function abrirReserva() {
+      modalReserva.style.display = 'flex';
     }
-  });
-
-  // Atualiza QR code pela URL
-  function atualizarQrcodeUrl(){
-    const url = qrcodeUrlInput.value.trim();
-    if(url){
-      qrcodeImg.src = url;
+    function fecharReserva() {
+      modalReserva.style.display = 'none';
     }
-  }
-
-  // Alterna conteúdo das descrições
-  function toggleDescricao(id){
-    const box = document.getElementById(id);
-    const ativo = box.classList.toggle('ativa');
-    // Alterna o ícone do toggle
-    const icone = box.querySelector('.icone-toggle');
-    if (ativo){
-      icone.textContent = '˄';
-    } else {
-      icone.textContent = '⌄';
+    function confirmarReserva() {
+      const nome = document.getElementById('nomeReserva').value.trim();
+      const celular = document.getElementById('celularReserva').value.trim();
+      if(nome === '' || celular === '') {
+        alert('Por favor, preencha nome e WhatsApp para continuar.');
+        return;
+      }
+      fecharReserva();
+      abrirCheckout();
     }
-  }
 
-  // Inicia valor no carregamento
-  atualizarValor();
+    // Modal consulta Minhas Cotas
+    const modalConsulta = document.getElementById('modalConsulta');
+    function abrirConsulta() {
+      modalConsulta.style.display = 'flex';
+      document.getElementById('resultadoConsulta').innerHTML = '';
+      document.getElementById('celularConsulta').value = '';
+    }
+    function fecharConsulta() {
+      modalConsulta.style.display = 'none';
+    }
+    function consultarCotas() {
+      const celular = document.getElementById('celularConsulta').value.trim();
+      if(celular === '') {
+        alert('Digite seu WhatsApp para consultar suas cotas.');
+        return;
+      }
+      // Simulação: gera cotas aleatórias para mostrar
+      const qtd = Math.floor(Math.random()*50) + 1;
+      document.getElementById('resultadoConsulta').innerHTML = `<strong>${celular}</strong>, você tem <strong>${qtd}</strong> cotas reservadas.`;
+    }
 
-</script>
+    // Modal Ranking Top compradores
+    const modalRanking = document.getElementById('modalRanking');
+    const btnTop = document.querySelector('.btn-top');
+    btnTop.addEventListener('click', () => {
+      modalRanking.classList.add('ativo');
+    });
+    function fecharRanking() {
+      modalRanking.classList.remove('ativo');
+    }
 
-</body>
-</html>
+    // Checkout
+    const checkoutTela = document.getElementById('checkoutTela');
+    const imagemQrcode = document.getElementById('imagemQrcode');
+    const inputQrcode = document.getElementById('qrcodeImg');
+    const inputChavePix = document.getElementById('chavePix');
+    const resumoCompra = document.getElementById('resumoCompra');
+
+    function abrirCheckout() {
+      checkoutTela.classList.add('ativo');
+      atualizarResumo();
+    }
+    function voltar() {
+      checkoutTela.classList.remove('ativo');
+      // limpa dados do checkout
+      inputQrcode.value = '';
+      imagemQrcode.src = '';
+      imagemQrcode.style.display = 'none';
+      inputChavePix.value = '';
+    }
+
+    inputQrcode.addEventListener('change', (event) => {
+      const arquivo = event.target.files[0];
+      if(arquivo) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          imagemQrcode.src = e.target.result;
+          imagemQrcode.style.display = 'block';
+        }
+        reader.readAsDataURL(arquivo);
+      }
+    });
+
+    inputChavePix.addEventListener('input', atualizarResumo);
+
+    function atualizarResumo() {
+      const total = quantidade * valorUnitario;
+      resumoCompra.textContent = `Total: R$ ${total.toFixed(2).replace('.', ',')}`;
+    }
+
+    function finalizarCompra() {
+      if(!imagemQrcode.src) {
+        alert('Por favor, adicione a imagem do QR Code Pix.');
+        return;
+      }
+      if(inputChavePix.value.trim() === '') {
+        alert('Por favor, insira su
